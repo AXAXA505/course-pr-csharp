@@ -23,6 +23,13 @@ namespace Vending
                 Name = name;
             }
         }
+        public Recipe(Recipe other)
+        {
+            Name = other.Name;
+            _requirements = new List<Requirement>(other._requirements);
+            Console.WriteLine($"[Recipe] copy ctor: \"{Name}\"");
+        }
+
         public bool AddIngredient(Ingredient? ingredient, int amount)
         {
             if (ingredient == null)
@@ -30,19 +37,16 @@ namespace Vending
                 Console.WriteLine("[Recipe] Отказ: ингредиент не задан (null).");
                 return false;
             }
-
             if (amount <= 0)
             {
                 Console.WriteLine($"[Recipe] Отказ: количество ингредиента \"{ingredient.Name}\" должно быть больше нуля (получено {amount}).");
                 return false;
             }
-
             if (HasIngredient(ingredient))
             {
                 Console.WriteLine($"[Recipe] Отказ: ингредиент \"{ingredient.Name}\" уже присутствует в рецепте.");
                 return false;
             }
-
             _requirements.Add(new Requirement { Ingredient = ingredient, Amount = amount });
             return true;
         }
@@ -51,7 +55,7 @@ namespace Vending
         {
             foreach (var req in _requirements)
             {
-                if (req.Ingredient == ingredient)
+                if (ReferenceEquals(req.Ingredient, ingredient))
                 {
                     return true;
                 }
